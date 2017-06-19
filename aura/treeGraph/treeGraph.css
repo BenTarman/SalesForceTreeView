@@ -1,0 +1,29 @@
+.THIS.slds-text-heading--label{
+	font:bold;
+  font-size: 50px;
+	
+}
+
+
+
+
+.THIS .links line {
+           stroke: #999;
+ 		 stroke-opacity: 0.6;
+        }
+
+.THIS .nodes circle {
+            pointer-events: all;
+            stroke: none;
+            stroke-width: 10px;
+        }
+        
+        
+
+.THIS.container {
+    	  margin-top: -140px;
+        height: 930px;
+        width: 1140px;
+        border:2px solid #000;
+        overflow: hidden;
+ }

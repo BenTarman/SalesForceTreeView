@@ -1,0 +1,7 @@
+({
+	updateDetailBox: function(component){
+	
+	}
+	
+	
+})

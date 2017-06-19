@@ -1,0 +1,38 @@
+<aura:component controller="DataProvider">
+
+<ltng:require scripts="{!$Resource.d3}" afterScriptsLoaded="{!c.init}" /> 
+
+
+<div>
+<div aura:id="svg">
+<![CDATA[
+<svg></svg>
+]]>
+</div>	
+</div>
+
+<!-- work around to style container I cannot find classes with .attr for some reason. -->
+<div class = "container" id="box"></div>
+
+
+<aura:attribute name="allWork" type="Object[]"/>
+<aura:attribute name="relationships" type="Object[]"/>
+<aura:attribute name="work" type="Object[]"/>
+
+<aura:attribute name="divContainer" type="Object"/>
+
+<aura:attribute name="wait" type="String"/>
+
+<!--  used to hold what work item the user has clicked on -->
+<aura:attribute name="clickedWork" type="String"/>
+<aura:attribute name="valueClickedWork" type="Object"/>
+
+
+<aura:handler name="change" value="{!v.work}" action="{!c.buildTree}"/>
+
+
+
+
+
+
+</aura:component>

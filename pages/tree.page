@@ -1,0 +1,14 @@
+<apex:page >
+    <apex:includeLightning />
+    
+    <div id = "table"/>
+    
+	<script>
+	$Lightning.use("c:visualForce",function(){
+	$Lightning.createComponent("c:table", {},"table",function(cmp){
+		});
+	});
+	
+	</script>
+	
+</apex:page>

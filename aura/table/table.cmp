@@ -1,0 +1,211 @@
+<aura:component controller="DataProvider" implements="flexipage:availableForAllPageTypes" access="global">
+
+<ltng:require scripts="{!join(',', $Resource.JQuery, $Resource.Select2JS,$Resource.d3)}" styles="{!$Resource.Select2CSS}" afterScriptsLoaded="{!c.init}" /> 
+
+<!--  work contains all of the object as they are updated by the filter -->
+<aura:attribute name="work" type="Object[]"/>
+<aura:attribute name="relationships" type="Object[]"/>
+<!-- object array of all the information associated with filter -->
+<aura:attribute name="workInfo" type="Object[]"/>
+
+<!-- FILTER attributes -->
+<aura:attribute name="item" type="String" />
+<aura:attribute name="itemList" type="String[]"/>
+<aura:attribute name="filterType" type="String"/>
+<!-- Used to get the filter decision-->
+<aura:attribute name="clickedFiltered" type="String"/>
+
+<!-- Used for in the detail box -->
+<aura:attribute name="clickedWork" type="String"/>
+<!-- Need this variable to always contain all of the work so we can get it for detail box -->
+<aura:attribute name="allWork" type="Object[]"/>
+
+
+
+<!-- PAGE HEADER -->
+    <div class="slds-page-header" role="banner" style = "background-color: #002080;">      	
+      	<div class="slds-grid">
+        	<div class="slds-col">
+            	<div style= "height: 110px; width: 400px; background-color: #630A94;  border-radius: 25px;" >
+                	<img src="{!$Resource.FinalLogoForApp}" width="100" height="100" style="float:left;"/>
+                    <h1 style = "font-family: Comic Sans MS, Times, serif; font-size: 50px; font-weight: 900; color:white;">My Work</h1>
+                    <p class=".slds-text-heading--label" style="float:bottom; color:white;">Agile Network Tree View</p>
+                </div>
+			</div>
+		</div>
+	</div>
+<!-- PAGE HEADER END -->
+
+
+
+
+<!-- call the tree graph  we will need to pass in variables for relationships and workList later when the user filter (and use change event in treeGraph).-->
+<div>
+<!-- TREE GRAPH START -->
+    <div style= "width: 1200px; float:left; background-color: white; border: 20px solid #f5f8fa; height: 1000px; position: relative;">
+    
+		<c:treeGraph work="{!v.work}" relationships="{!v.relationships}" clickedWork="{!v.clickedWork}" allWork="{!v.allWork}"/>
+	
+		
+    </div >
+ <!-- TREE GRAPH END -->
+     
+        
+<!--DETAIL BOX START   -->
+    <div style= " border: 20px solid #f5f8fa; background-color: white; height: 1000px; margin-top: 0px; overflow: auto; position: relative; font-size: 25px;">
+    	<ui:outputText value="{!v.clickedWork}" > </ui:outputText>
+    </div>
+<!-- DETAIL BOX END   -->
+</div>  
+
+
+<!--  SEARCH BAR BOX START -->
+<div style = "background: #f5f8fa;  position: static;">
+	<div style = "left: 20px; position: relative;">
+	
+		<h6 style = "font-size: 25px; color:black;"> Filter Type</h6>
+        	<ui:inputSelect aura:id="item" class="slds-form-element__control" value="{!v.item}" change="{!c.selectChange}">
+   					<aura:iteration items="{!v.itemList}" var="val">
+       					<ui:inputSelectOption text="{!val}" />
+   					</aura:iteration>
+			</ui:inputSelect>
+
+
+	<h6 style = "font-size: 25px; color:black;">Selection</h6>
+		<div>
+			<select id="topLevel" style="width:300px;">
+			<!-- Dropdown List Option -->
+			</select>
+		</div>
+		
+        <!-- Filter Button -->
+ <ui:button aura:id="button" buttonTitle="Filter" class="button" label="Filter" press="{!c.reloadData}"/>
+
+	</div>
+</div>
+
+<!--  SEARCH BAR BOX END -->
+
+
+<!-- TABLE START -->
+<div class = "slds" style = "border: 20px solid #f5f8fa; ">      
+<!--  initialize table -->
+<table class = "slds-table slds-table--bordered slds-table--cell-buffer">
+<!--  titles go here -->
+	<thead>
+		<tr class = "slds-text-title--caps">
+
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Number">#  </div>
+			</th>
+			
+		<th scoper = "col">
+			<div class = "slds-truncate" title = "Id"> Work Id</div>
+			</th>
+			
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Subject"> Subject</div>
+			</th>
+			
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Status"> Status</div>
+			</th>
+
+		<th scope = "col">
+			<div class = "slds-truncate" title ="Type"> Type</div>
+			</th>
+			
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Priority"> Priority</div>
+			</th>
+			
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Team" > Team</div>
+			</th>
+		<!--  
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Epic" > Epic</div>
+			</th>-->
+			
+		<th scope = "col">
+			<div class = "slds-truncate" title = "Sprint" > Sprint</div>
+			</th>
+			
+
+		</tr>
+	</thead>
+	
+	<!--  populate the list contents -->
+<aura:iteration items="{!v.work}"  var="element" indexVar="index">
+
+	<tbody>
+		<tr>
+
+	<th scope = "row" data-label = "Number">
+		<div class = "slds-truncate" title = "">
+			{!index + 1}
+		</div>
+	</th>
+
+	<th scope = "row" data-label = "Id">
+		<div class = "slds-truncate" title = "{!element.Name}">
+			<a href = '#' onclick = "getWork()"> {!element.Name}</a>
+		</div>		
+	</th>
+	
+	<th scope = "row" data-label = "Subject">
+		<div class = "slds-truncate" title = "">
+			<a> <ui:outputText value="{!element.agf__Subject__c}"  click="{!c.getWork}"> </ui:outputText>
+ 			</a>
+		</div>
+	</th>
+	
+	<th scope = "row" data-label = "Status">
+		<div class = "slds-truncate" title = "Status">
+ 			{!element.agf__Status__c}
+		</div>
+	</th>
+	
+
+	<th scope = "row" data-label = "Type">
+		<div class = "slds-truncate" title = "Type">
+ 			{!element.agf__Type__c}
+		</div>
+	</th>
+	
+	<th scope = "row" data-label = "Priority">
+		<div class = "slds-truncate" title = "Priority">
+ 			{!element.agf__Priority__c}
+		</div>
+	</th>
+	
+	<th scope = "row" data-label = "Team">
+		<div class = "slds-truncate" title = "">
+			{!element.agf__Scrum_Team_Name__c}		
+		</div>
+	</th>
+	<!--  
+	<th scope = "row" data-label = "Epic">
+		<div class = "slds-truncate" title = "Epic">
+ 			{!element.agf__Epic__c}
+		</div>
+	</th>-->
+	
+	<th scope = "row" data-label = "Sprint">
+		<div class = "slds-truncate" title = "Sprint">
+ 			{!element.agf__Sprint_Timeframe__c}
+		</div>
+	</th>
+	
+
+	
+		</tr>
+	</tbody>
+</aura:iteration>
+
+
+</table>
+</div>
+  <!-- TABLE END -->  
+  
+</aura:component>
